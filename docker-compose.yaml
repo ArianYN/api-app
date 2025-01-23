@@ -5,7 +5,8 @@ services:
     ports:
       - "95:80"
     environment:
-      ASPNETCORE_URLS: "http://+:80"
+      ASPNETCORE_URLS: "http://+:95"
+      ASPNETCORE_HTTP_PORTS: "95"
     deploy:
       restart_policy:
         condition: on-failure
