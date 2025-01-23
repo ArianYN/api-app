@@ -1,0 +1,9 @@
+﻿version: '3.8'
+services:
+  api-app:
+    image: arian-api-app:latest
+    ports:
+      - "95:95"
+    deploy:
+      restart_policy:
+        condition: on-failure
