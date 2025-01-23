@@ -8,6 +8,13 @@ services:
       - "5001:80"
     environment:
       ASPNETCORE_URLS: "http://+"
+      DefaultConnection: /run/secrets/DefaultConnection # Reference the secret file
+    secrets:
+      - DefaultConnection
     deploy:
       restart_policy:
         condition: on-failure
+
+secrets:
+  DefaultConnection:
+    external: true  # Use the secret created in Portainer

@@ -22,7 +22,7 @@ namespace apiApp
                     }
                 );
             });
-            
+
             builder.Services.AddControllers()
                 .AddJsonOptions(options =>
                 {
@@ -30,7 +30,6 @@ namespace apiApp
                 });
 
             // Add services to the container.
-
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
@@ -38,10 +37,23 @@ namespace apiApp
 
             // Configure Entity Framework with PostgreSQL
             IConfiguration Configuration = builder.Configuration;
-            // Configure Entity Framework with PostgreSQL
-            string connectionString = Configuration.GetConnectionString("DefaultConnection")
-                                      ?? Environment.GetEnvironmentVariable("DefaultConnection");
-            
+
+            // Try to read connection string from the Docker secret file
+            string secretFilePath = Environment.GetEnvironmentVariable("DefaultConnection");
+            string connectionString = null;
+
+            if (!string.IsNullOrEmpty(secretFilePath) && File.Exists(secretFilePath))
+            {
+                connectionString = File.ReadAllText(secretFilePath).Trim(); // Trim to remove unnecessary spaces or newlines
+            }
+            else
+            {
+                // Fallback to environment variable or appsettings.json
+                connectionString = Configuration.GetConnectionString("DefaultConnection") 
+                                   ?? throw new InvalidOperationException("DefaultConnection string is not set.");
+            }
+
+            // Register the database context
             builder.Services.AddDbContext<DatabaseContext>(options =>
                 options.UseNpgsql(connectionString));
 
@@ -50,7 +62,6 @@ namespace apiApp
             app.UseCors(MyAllowSpecificOrigins);
 
             // Configure the HTTP request pipeline.
-            // Swagger link: https://apiexampleproject.onrender.com/swagger/index.html
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
@@ -61,11 +72,6 @@ namespace apiApp
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            //app.UseHttpsRedirection();
-
-            //app.UseAuthorization();
-
 
             app.MapControllers();
 
