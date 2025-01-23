@@ -3,7 +3,9 @@ services:
   api-app:
     image: arian-api-app:latest
     ports:
-      - "95:95"
+      - "95:80"
+    environment:
+      ASPNETCORE_URLS: "http://+"
     deploy:
       restart_policy:
         condition: on-failure
