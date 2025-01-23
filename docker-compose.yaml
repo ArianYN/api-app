@@ -2,11 +2,12 @@
 services:
   api-app:
     image: arian-api-app:latest
+    build:
+      dockerfile: apiApp/Dockerfile
     ports:
       - "95:80"
     environment:
       ASPNETCORE_URLS: "http://+"
-      ASPNETCORE_HTTP_PORTS: "95"
     deploy:
       restart_policy:
         condition: on-failure
