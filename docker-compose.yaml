@@ -5,7 +5,7 @@ services:
     build:
       dockerfile: apiApp/Dockerfile
     ports:
-      - "95:80"
+      - "5001:80"
     environment:
       ASPNETCORE_URLS: "http://+"
     deploy:
